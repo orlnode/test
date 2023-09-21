@@ -1,3 +1,4 @@
+import os 
 current_directory = os.getcwd()
 
 separator = os.path.sep
