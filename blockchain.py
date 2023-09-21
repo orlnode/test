@@ -188,7 +188,7 @@ class Blockchain:
 
 
     def execute(self,tx):
-
+        assert 0=1
         tx = f"echo {password} | {self.command} {tx}  {self.node} --chain-id {self.chain} {self.gas}  --output json"
         process  = os.popen(f"{message} -y")
         
