@@ -10,4 +10,5 @@ déclarer une variable password = TON_PASSWORD (celui pour accéder au keyring)
 les commandes suivantes doivent fonctionner 
 ```
 COSMOSHUB.balances()
-OSMOSIS.balances() ```
+OSMOSIS.balances() 
+```
