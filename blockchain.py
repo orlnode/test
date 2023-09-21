@@ -2,45 +2,21 @@ import asyncio
 import subprocess
 import json
 
-#  base de donnée pour l'initialisation des blockchains, channels ibc et assets
-
-
-"""
-    Ici un objet blockchain est construit pour chaque blockchain.
-    les attributs sont stokés dans une base de donnée (qui a juste vocation à contenir 
-    les données qui sont assez statiques) ! 
-
-    il y a un attribut self.controllable qui est un bool vallant true si 
-    et seulement si le logiciel de la chaine est installer (via command_exist) et si une
-    clef est stokée dans le logiciel. 
-    
-    il y a un incovenient à ce modèle car si j'ai besoin d'implémenter des méthodes sur
-    une chaine spécifique je vais devoir créer une seconde classe ? 
-    ou alors faire quelques choses avec des modules 
-
-    class module:
-        def __init__(self,blockchain_name )
-            self.blockchain = Blockchain.instance_by_name[blockchain_name]
-            self.execute = self.blockchain.exectute
-            self.request = self.blockchain.request
-            self.sign    = sel
-
-    class crescent_dex(module):
-        def __init__(self):
-            module.__init__(self,"crescent")
-
-
-
-"""
-
-
-
-
-
-
-
+from tools import command_exists
 
 DATABASE = "blockchain.db"
+
+
+# decorateur pour controler si la blockchain est controlable
+
+def controlable(function):
+    def wrapper(obj,*args, **kwargs):
+        if not obj.is_controlable():
+            return "Action impossible"
+        else:
+            return obj.function(*args,**kargs)
+    return wrapper 
+
 
 class Blockchain:
 
@@ -130,8 +106,19 @@ class Blockchain:
                 self.is_controlable = False
 
             else:
-                # si le logiciel de la chaine est installer 
-                self.is_controlable   = command_exists(self.command)
+                # si le logiciel de la chaine est installer et si y'a wallet
+                if command_exists(self.command):
+
+                    is_wallet_ok, address = self.get_address()
+                    
+                    if is_wallet_ok:
+                    
+                        self.is_controlable = True
+                        self.address        = address
+                else:
+                    self.is_controlable = False
+                    self.address        = None
+
 
             # prefix servira pour les assets 
 
@@ -155,11 +142,8 @@ class Blockchain:
         Ensuite des appels rpc pour mettre à jours les prix ou autre truc. (c'est moins grave). 
 
     """
-
+    @controlable
     def request(self,request):
-
-        assert self.is_controlable
-
         request = f"{self.command} {request} {self.node} --chain-id {self.chain} -o json"       
         
         process = os.popen(request)
@@ -177,9 +161,22 @@ class Blockchain:
                 print(stdout)
                 return 'error'
 
+
+
+    def get_address(self):
+        request = f" echo {password} | {self.command} keys show"
+        process = os.popen(request)
+        stdout = process.read()
+        stderr = process.close()
+        if stderr:
+            return False, None
+        else:
+            return True, json.loads(stdout)['address']
+
+
     
     # requete asynchrone 
-
+    @controlable
     async def async_request(self,request):
         return False
 
@@ -197,10 +194,10 @@ class Blockchain:
     """
 
 
-
+    @controlable
     def execute(self,tx):
 
-        tx = f"echo {password} | {self.command} {tx}  {self.node} --chain-id {self.chain} {self.gas} {self.mode} --output json"
+        tx = f"echo {password} | {self.command} {tx}  {self.node} --chain-id {self.chain} {self.gas}  --output json"
         process  = os.popen(f"{message} -y")
         
         stdout   = process.read()
@@ -225,16 +222,8 @@ class Blockchain:
             if not(result == 'error'):
                 return result
 
-    @controlable
+
     def balances(self,address):
         request = " q bank balances {address}"
         result  = self.request(request)
         return result['balance']
-
-def controlable(function):
-    def wrapper(obj,*args, **kwargs):
-        if not obj.is_controlable():
-            return "Action impossible"
-        else:
-            return obj.function(*args,**kargs)
-    return wrapper 
