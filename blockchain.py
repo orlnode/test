@@ -2,21 +2,6 @@ import asyncio
 import subprocess
 import json
 
-from tools import command_exists
-
-DATABASE = "blockchain.db"
-
-
-# decorateur pour controler si la blockchain est controlable
-
-def controlable(function):
-    def wrapper(obj,*args, **kwargs):
-        if not obj.is_controlable():
-            return "Action impossible"
-        else:
-            return obj.function(*args,**kargs)
-    return wrapper 
-
 
 class Blockchain:
 
@@ -46,6 +31,12 @@ class Blockchain:
         cls.instances_by_name    = {}
         cls.controlable_instance = []
         cls.channels             = {}
+
+
+    @classmethod
+    def add(cls,name):
+        globals()[name.upper()] = cls(name)
+
 
 
     @classmethod
@@ -115,6 +106,7 @@ class Blockchain:
                     
                         self.is_controlable = True
                         self.address        = address
+                        self.__class__.controlable_instance.append(self)
                 else:
                     self.is_controlable = False
                     self.address        = None
@@ -142,7 +134,7 @@ class Blockchain:
         Ensuite des appels rpc pour mettre à jours les prix ou autre truc. (c'est moins grave). 
 
     """
-    @controlable
+
     def request(self,request):
         request = f"{self.command} {request} {self.node} --chain-id {self.chain} -o json"       
         
@@ -164,7 +156,7 @@ class Blockchain:
 
 
     def get_address(self):
-        request = f" echo {password} | {self.command} keys show"
+        request = f" echo {password} | {self.command} keys show wallet --output json"
         process = os.popen(request)
         stdout = process.read()
         stderr = process.close()
@@ -174,9 +166,7 @@ class Blockchain:
             return True, json.loads(stdout)['address']
 
 
-    
-    # requete asynchrone 
-    @controlable
+
     async def async_request(self,request):
         return False
 
@@ -194,7 +184,7 @@ class Blockchain:
     """
 
 
-    @controlable
+
     def execute(self,tx):
 
         tx = f"echo {password} | {self.command} {tx}  {self.node} --chain-id {self.chain} {self.gas}  --output json"
@@ -223,7 +213,7 @@ class Blockchain:
                 return result
 
 
-    def balances(self,address):
-        request = " q bank balances {address}"
+    def balances(self):
+        request = f" q bank balances {self.address}"
         result  = self.request(request)
-        return result['balance']
+        return result['balances']
