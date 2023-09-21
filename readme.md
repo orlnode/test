@@ -1,4 +1,5 @@
-``` git clone https://github.com/orlnode/test/
+``` 
+git clone https://github.com/orlnode/test/
 cd test
 ```
 ensuite entrer dans le terminal python (ou sage)
