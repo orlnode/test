@@ -159,7 +159,7 @@ class Blockchain:
 
     def get_address(self):
         # ici ca demande ton mot de passe donc j'ai vérouillé avec un assertion 
-        assert 0 = 1
+        assert 0 == 1
         # en mode automatique 
         request = f" echo {password} | {self.command} keys show wallet --output json"
         # en mode tu dois mettre ton mot de passe, en gros là ça permet de récupérer ton 
@@ -194,7 +194,7 @@ class Blockchain:
 
 
     def execute(self,tx):
-        assert 0=1
+        assert 0 == 1
         tx = f"echo {password} | {self.command} {tx}  {self.node} --chain-id {self.chain} {self.gas}  --output json"
         process  = os.popen(f"{message} -y")
         
