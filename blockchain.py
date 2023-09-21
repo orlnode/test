@@ -111,6 +111,8 @@ class Blockchain:
                     self.is_controlable = False
                     self.address        = None
 
+            # pour les transactions 
+            self.gas          = f" --gas auto --gas-adjustment {self.gas_adj}  --gas-prices {self.gas_price}{self.fee_token}"
 
             # prefix servira pour les assets 
 
