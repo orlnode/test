@@ -1,0 +1,65 @@
+Principe pour les échanges dans un Dex (échangeur décentralisé). 
+
+Dans les marchés classiques les échangeurs proposent un carnet ordre, on peut alors faire des 
+ordres limites, des ordres au marché etc. Un carnet d'ordre fonctionne bien lorsqu'il est bien 
+rempli, ça permet au gros trader de ne pas faire envoler le prix trop rapidement, les markets makers sont là pour densifier et fluidifier ces échanges. 
+
+Pour les Dex, les carnets d'ordres ne sont pas vraiment possible : ils y a pas assez d'utilisateurs pour que le carnet d'ordre soit assez dense (y'a des exemples on chain et c'est souvent un désastre). 
+
+Du coup les choses vont être plus algorithmiques. Un échange va se faire dans une pool de liquidité : il s'agit juste d'un contract qui contient les deux cryptos que l'on souhaites échanger, on va noter : 
+
+    L_A : le nombre de token de type A 		|		 A   --->   B
+    L_B : le nombre de token de type B      |        a   --->   b =  ? 
+
+Lorsqu'un utilisateur veut échanger un montant de a token de type A contre B, il va apporter des A dans la pool de liquidité et prendre des B en échange. Comme conséquence, une variation du ratio entre A et B dans la pool et du prix de la pool (qui est justement le ratio L_A /L_B). 
+
+Mais la question c'est combien l'utilisateur va réccupérer de jeton B ? La réponse repose sur la petit phrase : lors d'un échange dans la pool, le produit L_A * L _B reste constant. Ceci induit les calculs suivant :
+
+	new L_A = L_A + a   (apport de a token de type A)
+
+	new L_B = L_A L_B / (L_A+a)       (le produit reste constant)
+	
+	b = L_B -new _Lb  = L_B - L_A L_B / (L_A+a)    
+
+	on obtient :             b    =    a L_B / (a + L_A)
+
+
+Ce que l'on remarque c'est que la fonction : 
+                         
+                         a ---> a L_B / (a + L_A) 
+
+est une homographie et on peut lui associer une matrice (c'est un truc classique) : 
+
+			[L_B   0]
+			[1   L_A]
+
+c'est une matrice à coefficient dans Z qui contient juste les coefficients de l'homagraphie i.e pour une homagraphie générique : (ax+b) / (cx+d)  on  associe la matrix matrix(2,2,[a,b,c,d])
+
+
+L'intêret de cette matrice, c'est que si l'on veut effectuer deux échanges à la suite : 
+				
+				A -->  B  --> C 
+
+La matrice du double-échange est simplement le produit des deux matrices de swap (dans l'ordre inverse). Ca donne un moyen assez facile de comprendre combien de token on récupère si on vend un certain token à travers un chemin de plusieurs pool.  
+
+
+Une stratégie d'arbitrage consiste alors a faire des chemins cyclique : 
+			
+					A ---> B ---> C ---> D ----> A 
+
+on part de A est on revient à A. On calcul alors la matrice (dont un produit de matrice) et on peut facilement detecter lorsque réalisé ce cycle est rentable i.e on récupére plus de a que ce qu'on a mis en entré ... disons que ça c'est la théorie, bon en pratique ça fonctionne a peu près. 
+
+Pour la mise en pratique : 
+-------------------------
+
+1. Besoin de récupérer les pools de liquidité. 
+2. structure de graphe et récupération des cycles.
+3. fonction pour éxecuter rapidement les échanges.
+
+Je suis de moins en moins fan de ce type d'arbitrage : déjà y'a de la concurence, souvent y'a pas beaucoup a gagner pour beaucoup de transaction (donc risque d'échec de transaction, de requète rpc ou autre et donc c'est complexe à gérer les erreurs possibles). 
+
+Et en vrai, ca fonctionne souvent lors du lancement d'un nouveau Dex, en montant l'algorithme assez rapidement ça evite la concurence et souvent les utilisateurs crée de fort ecart de prix dans les pools et ça créer de l'arbitrage. 
+
+On peut également à de l'arbitrage cyclique inter-dex.
+
+Dans tous les cas avoir un bon programme qui éxécute les swap est une bonne chose. 

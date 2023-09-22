@@ -1,0 +1,69 @@
+Mon petit point de vue sur les marchés monétaires (money market). Je parle de la blockchain Umee qui est une blockchain dédiée. 
+
+Donc un marché monétaire, c'est un marché de prêt et d'emprunt de crypto : actuellement sur Umee, y'a 14 millions en prêt et 4 millions en emprunt. C'est pas énorme, pour le marché crypto
+par exemple y'a un gros money market dans l'ecosystem eth qui s'appelle AAVE, il me semble que c'est 7 milliars de prêt ... le principe est le même ! 
+
+
+Le principe
+=========== 
+
+Un utilisateur apporte des cryptos sur la plateforme pour que d'autres utilisateurs les empruntent. Les emprunteurs payent des intêret aux préteurs (ici c'est pas un utilisateur qui prête à un utilisateur mais c'est mutualisé : tous les actifs qui sont mis en prêt sont mis dans une pool commune). Le protocole prend une petite partie (enfin il me semble) pour ses réserves en cas de problème. 
+
+Par contre, pour emprunter il faut avoir des actifs en prêt (pour garantie) : c'est le principe des prêts lombard (ou hypothèque, ou prêteur sur gage). tu mets en caution tes cryptos pour en emprunter d'autres (en valeur tu empruntes moins que ce que tu déposes). A priori, ça semble pas terrible de mettre en garantie plus que ce que tu empruntes mais il peut y avoir de l'utilité. 
+
+L'explication de la sur-collateralisation est simple à comprendre : si tu apportes 100$ et que tu peux repartir avec 300$, beh c'est la martingale du siècle. La différence avec les positions en levier sur les plateforme de trading classique c'est que même si tu as une position x10, tu ne disposes pas des x10 en crypto c'est juste un chiffre. Ici, chez umee si tu empruntes une cryptos tu peux la sorti de chez umee et en faire ce que tu en veux. 
+
+
+Pourquoi emprunter ?
+====================
+
+1. Effet de levier (assez léger * 1.5 à 2). Tu déposes 100 Atoms ça te permet d'emprunter, 700 (on va dire que le prix de l'atom est de 10$) et avec ces dollars tu achétes de l'atom que tu redéposes en prêt. Lorsque tu vas rembourser ta dette, tu vas revendre les atoms que tu as acheté avec les 700  et tu espères que le prix a monté pour que tu puisses récupérer plus que les 700$ que tu as emprunter. Ca permet un petit effet de levier, en bouclant le processeus de départ. 
+
+
+2. Jouer sur les corrélations. Y'a pas mal d'actif qui sont corrélés fortement (c'est une corrélation intraséque et pas une corrélation de marché). 
+
+C'est plus technique à expliquer et ça demande de comprendre le staking et liquid staking. 
+
+Staking et liquid staking : 
+==========================
+
+il faut savoir que tu peux avoir des intérêts sur tes atoms en les mettant en staking, le staking ça consite à déposer tes atoms chez un validateur et participer ainsi à la sécurisation de la blockchain (en gros au plus y'a d'atoms staker au mieux c'est niveau sécurité de la blockchain). Y'a deux problèmes : 
+
+	a.  Pour débloquer tes atoms y'a une période de 21 jours.
+	b.  Les atoms staker ne sont pas utilisablent dans d'autres protocoles (par exemple, si tu as staker tes atoms tu peux pas les déposer chez umee). 
+
+	Donc y'a une blockchain qui fournit un service de "liquid staking" : c'est quoi le principe ? Au lieu, de staker tes atoms chez un validateur tu vas les déposer dans un autre protocole (stride), et stride te donne une preuve de dépot (stride va staker à ta place les atoms, en prenant un petit frais) la preuve de dépot s'appelle stATOM et la valeur de stATOM = valeur de ATOM + intéret de staking :  c'est un jeton liquide (= utilisable) productif (= qui a un rendement) ! En gros, c'est comme-ci la valeur d'un billet de banque que tu détiens augmenter avec le temps en suivant les rendements du livret A, je trouve que l'idée est belle ! 
+
+	Ensuite une fois que tu as tes stATOMS tu peux les déposer chez umee et obtenir un petit rendement en plus pour le prêt, et surtout avoir la possibilité d'emprunter. Par exemple tu peux emprunter des atoms,  ces atoms tu les échanges en statoms de nouveau, le truc c'est que comme le prix de statoms / atoms augmentera toujours et bien lorsque tu vas rembourser ton prêt d'atom, tu vas revendre  tes statoms en atoms et donc tu vas avoir plus atoms que ce que tu dois rembourser  ! Et tu empoches la plus values (bon y'a une  condition : c'est que les taux d'intêrets de emprunt d'atom soit plus petit  à l'augmentation du prix statom / atom). Tu peux faire des boucles en gros ça leverage  les taux d'intérets (le mieux c'est d'avoir un petit programme qui fait ça, et qui fait les calculs pour voir vraiment la rentabilité car si y'a trop de monde qui fait le truc les taux d'emprunt sur atom vont trop monter etc). Bref, le marché va toujours aller à l'équilibre (les arbitrages sont pris).  
+
+Les risques
+===========
+
+Donc risque des positions prêt / emprunt. Les liquidations --- le saint-graal :D, j'ai un rdv pôle emploie et je pense  dire  " m'zelle, j'suis liquidateur chez umee :) "
+
+Le principe des liquidations est assez simple à comprendre. A un instant t tu apportes 100ATOM, on va dire ca représente 1000$ pour faire simple, ca te donne une capacité d'emprunt de 700$.
+
+Maintenant si le prix d'atom descent à 7$, la position devient risqué pour le protocole : lui il s'en fou de tes atoms tous pourris, il veux récupérer 700$, parce que c'est les 700$ d'un autre utilisateur ! C'est le même principe que si tu vas voir un banque et que tu mets ta maison en hypothèque pour un autre projet, ils vont te préter mais si y'a un problme sur ta maison en hypothèque et quelle perd en valeur, la banque s'en contrefou de ta maison, elle vend et récupère le cash. 
+
+
+La position est liquidable. Mais le truc c'est que ce n'est pas le protocole qui va liquider la position (le protocol ne peux pas agir, c'est les utilisateurs qui aggisent), le protocole mets une annonce : " y'a des atoms a liquider avec un bonus de 5% par rapport au prix de chez osmosis qui en veux " Bon là, premier arrivé, premier servi ... Le liquidateur prend le risque de marché pendant le temps qu'il aille revendre les atoms et le protocole est tranquillou. 
+
+
+Beh lorsque tes liquidateurs tu as pas forcément l'asset qu'il faut repayer, j'ai absolument pas envie de m'exposer a certain asset (y'a de vrais problèmes avec la plupart des cryptos dans cosmos y'a une grosse inflation sur les tokens, principalement pour récompenser l
+
+ donc l'idée c'est que tu empruntes l'asset, tu liquides, tu récupéres des atoms, tu vas les echanger sur osmosis, tu les renvoie sur umee et tu repayes ta dette et hop ... bref, c'est un poil complexe. 
+
+ De plus vu qu'au départ tu empruntes un truc, il te faut une capacité d'emprunt et donc de la garantie.  Donc même si j'emprunte que très rarement (en gros, j'ai des assets qui sont en staking, donc si je veux les revendre je dois attendre 21 jours et des fois j'ai pas envoie d'attendre, donc j'emprunte et je vends et je rebourse ma dette 21 jours plus tard), j'ai besoin de collatéral chez umee, ... au plus j'en ai au plus je peux liquidé de grosse position (1000$ de liquidation ça fait 50$ de reward). Et surtout, niveau psychologique c'est parfait, car souvent les utilisateurs prêtent des cryptos pour emprunter du $ pour acheter des cryptos, en gros un position long sur les cryptos. Donc leurs liquidations arrivent dans les crash de marché, donc d'une part tu récupéres tes pertes sur tes propres positions et d'autre part comme le marché est toujours rachété lors de grosse liquidations ca limite le risque. Bref, c'est un métier qui me convient bien ! 
+
+Par contre, avoir un algorithme complet qui liquide en full automatique c'est vraiment délicat ! Je trouve que c'est un bel exercice (bon en vrai aujourd'hui j'ai loupé 50$ de rewards, y'avais une mise a jour sur le client umee) !  Et en vrai, c'est là que je trouve le sens au mot decentralisé : tu peux être un vrai acteur du marché, je trouve ça fun, un petit côté jeu vidéo.  
+
+
+En plus, y'a un côté intéressant niveau trading, c'est que lorsque tu as de grosses liquidations (que tu vois en pratique), tu sais que le travail a été fait par les market maker et que le marché peu repartir à la hausse ! 
+
+
+
+
+--->  Il y a un risque pour le liquidateur. Lorsque l'asset qu'on liquide est peu liquide le prix peu fluctuer assez rapidement. 
+
+
+Par exemple, il n'y a aucune liquidité sur l'actif umee (c'est le token de la blockchain UMEE). Par exemple, liquider 1000$ de umee c'est très risqué car quand tu vas racheté ta position tu risques de faire augmenter le prix du token de plus de ton reward ! Donc faut gérer ce genre de truc dans un algo ce qui rend les choses encore plus délicate. Sur les gros actifs, y'a pas ce genre de problème btc eth atom ne vont pas sortir des bougie de 20% en 5 minutes. Là une bougie de 25% en 2 minutes ! 
