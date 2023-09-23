@@ -67,3 +67,50 @@ En plus, y'a un côté intéressant niveau trading, c'est que lorsque tu as de g
 
 
 Par exemple, il n'y a aucune liquidité sur l'actif umee (c'est le token de la blockchain UMEE). Par exemple, liquider 1000$ de umee c'est très risqué car quand tu vas racheté ta position tu risques de faire augmenter le prix du token de plus de ton reward ! Donc faut gérer ce genre de truc dans un algo ce qui rend les choses encore plus délicate. Sur les gros actifs, y'a pas ce genre de problème btc eth atom ne vont pas sortir des bougie de 20% en 5 minutes. Là une bougie de 25% en 2 minutes ! 
+
+### analyse d'une position : 
+un lien sur umee 
+
+https://app.umee.cc/dashboard?readonlyAddress=umee1u4s77a05f673awlv29yhw979uuy7qrwmsvzu4v
+
+sage: f = UMEED.inspect("USDC")
+// umee q leverage inspect  USDC 100 0 0.96 0
+
+{
+    "address": "umee1u4s77a05f673awlv29yhw979uuy7qrwmsvzu4v",
+    "analysis": {
+        "Borrowed": 13451,
+        "Liquidation": 13885,
+        "Value": 18018
+    },
+    "position": {
+        "collateral": [
+            {
+                "denom": "ETH",
+                "amount": "4.989171647717217208"
+            },
+            {
+                "denom": "UMEE",
+                "amount": "31192.692569857564933649"
+            },
+            {
+                "denom": "WBTC",
+                "amount": "0.369941506188333938"
+            },
+            {
+                "denom": "stATOM",
+                "amount": "14.509303145198448082"
+            }
+        ],
+        "borrowed": [
+            {
+                "denom": "ATOM",
+                "amount": "0.239541000000000000"
+            },
+            {
+                "denom": "USDC",
+                "amount": "13448.811623000000000000"
+            }
+        ]
+    }
+}
