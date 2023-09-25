@@ -158,19 +158,31 @@ class Blockchain:
                 return 'error'
 
 
+    """
+        Ici on recupère les adresses du wallet. 
 
+    """
     def get_address(self):
-        request = f" echo {password} | {self.command} keys show wallet --output json"
-        # en mode tu dois mettre ton mot de passe, en gros là ça permet de récupérer ton 
-        # address.  
-        # request = f" {self.command} keys show wallet --output json"
+        ### changement 
+        request = f" echo {password} | {self.command} keys list --output json"
         process = os.popen(request)
         stdout = process.read()
         stderr = process.close()
         if stderr:
             return False, None
         else:
-            return True, json.loads(stdout)['address']
+            try:
+                # ici y'a un truc avec certain chain par exmeple marsd
+                # normalement ça doit me renvoyer un tableau vide []
+                # mais mars me renvoie un message : No records were found in keyring
+                wallets = json.loads(stdout)
+            except:
+                return False, None 
+            wallet  = [w for w in wallets if w['name'] == 'wallet']
+            if wallet ==[]:
+                return False, None
+            else:
+                return True, wallet[0]['address']
 
 
 
@@ -193,9 +205,9 @@ class Blockchain:
 
 
     def execute(self,tx):
-        assert 0 == 1
-        tx = f"echo {password} | {self.command} {tx}  {self.node} --chain-id {self.chain} {self.gas}  --output json"
-        process  = os.popen(f"{message} -y")
+        tx = f"echo {password} | {self.command} {tx}  {self.node} --chain-id {self.chain} {self.gas}  --output json --from wallet"
+        # correction tx  vs message
+        process  = os.popen(f"{tx} -y")
         
         stdout   = process.read()
         stderr   = process.close()
@@ -213,7 +225,9 @@ class Blockchain:
         error = True 
         
         while error:
-            # ici vaut mieux mettre un compteur 
+            # ici vaut mieux réfléchir à un compteur a la place de while qui fait tourner
+            # a l'infini au cas où y'a un problème
+            # et que la transaction ne soit pas enregistrer dans le block
             time.sleep(6)
             result  = self.request(f' q tx {txhash}')
             if not(result == 'error'):
