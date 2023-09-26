@@ -5,7 +5,7 @@ Je t'expliques un peu plus mon projet. Ca te permettra de voir si tu peux m'aide
 
 
 Qu'est ce qu'il faut ? 
-======================
+---------------------
 
 - Sur Osmosis.
 - Ibc transfer général.
@@ -16,10 +16,10 @@ Qu'est ce qu'il faut ?
 
 Remarques : 
 
- a. pas besoin des 1000 pools donc une idée serai de récupérer les pools importantes en base de  donnée, en gros faire une préselection pour viré toutes les petites pools inutilisables. 
+ - pas besoin des 1000 pools donc une idée serai de récupérer les pools importantes en base de  donnée, en gros faire une préselection pour viré toutes les petites pools inutilisables. 
 
 
- b. y'a également un problème de chemin : par exemple pour échanger ATOM contre du USDC, il n'y a pas de pool direct ATOM / USDC  et donc faut selectionner un chemin du genre :
+ - y'a également un problème de chemin : par exemple pour échanger ATOM contre du USDC, il n'y a pas de pool direct ATOM / USDC  et donc faut selectionner un chemin du genre :
 
       ATOM ---> OSMO ---> USDC 
 
@@ -27,7 +27,7 @@ Remarques :
 
    Avec mes histoires de matrices, y'a moyen de faire des calculs mais avec un trop grand nombre de pool les algorithmes de chemins sont trop lent chez moi ! 
 
- c. y'a un problème également sur les datas. Lorsque tu récupères les pools de liquidité  tu récupére un dictionnaire python avec des clefs embriquées du coup c'est pénible pour récupérer l'information dont tu as besoin : 
+ - y'a un problème également sur les datas. Lorsque tu récupères les pools de liquidité  tu récupére un dictionnaire python avec des clefs embriquées du coup c'est pénible pour récupérer l'information dont tu as besoin : 
 
 ```
 sage: p = OSMOSIS.request("q poolmanager all-pools")['pools']
@@ -68,7 +68,7 @@ l'info dynamique importante c'est :
 
 
 
- c. Pour la génération de la commande de swap, je sais a peu près faire (disons que j'ai quelques problème avec certain asset) ... 
+ - Pour la génération de la commande de swap, je sais a peu près faire (disons que j'ai quelques problème avec certain asset) ... 
 
 
 -------->>  Y'a du boulot pour faire un truc clean ... faut réfléchir avant de coder ! 
