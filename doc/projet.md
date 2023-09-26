@@ -7,9 +7,9 @@ Je t'expliques un peu plus mon projet. Ca te permettra de voir si tu peux m'aide
 Qu'est ce qu'il faut ? 
 ======================
 
-1. Sur Osmosis.
-2. Ibc transfer général.
-3. sur Umee. 
+- Sur Osmosis.
+- Ibc transfer général.
+- sur Umee. 
 
 
 1. Une bonne fonction de swap sur osmosis. Là sérieux j'ai du mal car c'est un véritable bordel, y'a plus de 1000 pools de liquidité. Le truc, c'est que si tu swap dans une pool, il faut faire attention à la liquidité de la pool le L_A et L_B dans mon fichier doc/dex.txt en gros faut sélection les pools qui ont le plus de liquidité : sinon tu peux te retrouver à échanger 1 atom pour 1$ (c'est un peu critique ici). (y'a des gars qui ont vraiment perdu beaucoup en swappant n'importe comment !!!)
@@ -28,6 +28,7 @@ Remarques :
    Avec mes histoires de matrices, y'a moyen de faire des calculs mais avec un trop grand nombre de pool les algorithmes de chemins sont trop lent chez moi ! 
 
  c. y'a un problème également sur les datas. Lorsque tu récupères les pools de liquidité  tu récupére un dictionnaire python avec des clefs embriquées du coup c'est pénible pour récupérer l'information dont tu as besoin : 
+
 ```
 sage: p = OSMOSIS.request("q poolmanager all-pools")['pools']
 sage: pool = p[16]
