@@ -56,13 +56,13 @@ pool['pool_assets'][0]['token']['denom'] # pour récupérer un asset
 
 Ya quelques info statique importante : 
 
-- id
-- contrôler le 'type' (je t'ai parlé que d'un type de pool mais il y a plusieurs algos d'échanges)
-- contrôler les weights. 
+* id
+* contrôler le 'type' (je t'ai parlé que d'un type de pool mais il y a plusieurs algos d'échanges)
+* contrôler les weights. 
 
 l'info dynamique importante c'est : 
 
-- pool_assets  les parties amounts  ... ici vu les chiffres la pool doit être vraiment toute pourrie typiquement si tu échanges 1$ de valeur dans cette pool tu perds 90% de valeur :D
+* pool_assets  les parties amounts  ... ici vu les chiffres la pool doit être vraiment toute pourrie typiquement si tu échanges 1$ de valeur dans cette pool tu perds 90% de valeur :D
 
 
 
