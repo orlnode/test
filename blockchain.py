@@ -114,11 +114,34 @@ class Blockchain:
                     self.address        = None
 
             # pour les transactions 
+            # ici gas-adjustment 1.7 c'est peut être un peu trop mais 
+            # y'a un bordel sur certain chain donc soit gérer au cas par cas, soit laisser à 1.7
+            # Disons que c'est pas trop grave sauf sur cosmoshub ou les frais de transaction ne 
+            # sont pas négligeable 0.03$ (je suis un radin :D 
+
             self.gas          = f" --gas auto --gas-adjustment 1.7  --gas-prices {self.gas_price}{self.fee_token}"
 
             # prefix servira pour les assets 
+            # casse pied :::  en gros ici j'ajoute un prefix pour différencier certain asset
+            # par exemple il y a plusieurs type d'usdc chez l'univers cosmos
+            # y'a du vrai usdc qui vient de noble
+            # y'a du axl usdc qui vient du bridge axelar d'eth 
+            # y'a du g usdc qui vient du bridge gravity 
+            # y'a du avax usdc  qui vient du vrai usdc de la blockchain avanlance et ramené 
+            # pour un raison  certainement débile par axelar (ils sont con con chez axelar, 
+            # il ramene plein de merde de partout). 
 
             self.prefix = ""
+            if name =='axelar':
+                self.prefix ="axl"
+            if name == 'gravitybridge':
+                self.prefix = 'g'
+            if name == 'nolus':
+                self.prefix = 'n'
+            if name =='quasar':
+                self.prefix = 'qua'
+            if name =='carbon':
+                self.prefix ='c'
 
 
     """
@@ -138,6 +161,11 @@ class Blockchain:
         Ensuite des appels rpc pour mettre à jours les prix ou autre truc. (c'est moins grave). 
 
     """
+
+
+    def __repr__(self):
+        return self.name.upper()
+
 
     def request(self,request):
         request = f"{self.command} {request} {self.node} --chain-id {self.chain} -o json"       
@@ -190,6 +218,16 @@ class Blockchain:
         return False
 
 
+    def cold_denom_trace(self,ibc_denom):
+        id = ibc_denom.replace("ibc/",self.name+'/')
+        return Asset.instances_by_id[id]
+
+    def denom_trace(self,ibc_denom):
+        return self.request(f"q ibc-transfer denom-trace {ibc_denom}")
+
+
+
+
     """
         Pour l'envoie de message 
             sign        : signer une transaction hors ligne
@@ -236,5 +274,8 @@ class Blockchain:
 
     def balances(self):
         request = f" q bank balances {self.address}"
-        result  = self.request(request)
-        return result['balances']
+        result  = self.request(request)['balances']
+        balances = {}
+        for coin in result:
+            balances[coin['denom']] = coin['amount']
+        return balances

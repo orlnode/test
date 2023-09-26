@@ -63,3 +63,10 @@ class Database:
         self.cursor.executemany(
             'INSERT OR IGNORE INTO channel VALUES (?,?,?)',datas)
         
+
+
+    def get_assets(self):
+        self.cursor.execute(
+            'SELECT * FROM asset')
+        datas = self.cursor.fetchall()
+        return datas
