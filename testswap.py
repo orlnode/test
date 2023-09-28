@@ -56,7 +56,7 @@ Donc 2 transactions
   i.    envoyer un peu d'atom sur osmosis  200000 uatom ça fait 0.2 atom ,bon tu peux changer. 
   ii.   acheter un peu d'osmo.
 
-gaiad  tx ibc-transfer transfer transfer channel-141 osmo1zy58n4j3qlq0fs86v9t5fg90qgh08p7zuxvytp 10uatom    --node https://rpc-cosmoshub.whispernode.com:443 --chain-id cosmoshub-4  --gas auto --gas-adjustment 1.7  --gas-prices 0.025uatom  --output json --from wallet
+gaiad  tx ibc-transfer transfer transfer channel-141 osmo1zy58n4j3qlq0fs86v9t5fg90qgh08p7zuxvytp 200000uatom    --node https://rpc-cosmoshub.whispernode.com:443 --chain-id cosmoshub-4  --gas auto --gas-adjustment 1.7  --gas-prices 0.025uatom  --output json --from wallet
 
 ii. là se te fait acheter pour 0.03 atom de osmo en payant les frais en atom 
 
