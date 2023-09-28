@@ -198,12 +198,12 @@ def swap_test():
     delta_2 = int(new_balance[B.denom()]) - b_2
     print(f"{delta_1}")
     print(f"{delta_2}")
-    """
+    
     # pour finir je recupére la  pool après mon swap 
     new_pool = OSMOSIS.request("q poolmanager pool 643")
 
     # je recupère les amounts : 
-    """
+    
     new_coin_A, new_coin_B = new_pool['pool']['pool_assets']
 
     new_L_A         = int(new_coin_A['token']['amount'])  # ici c'est le L_A
