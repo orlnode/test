@@ -242,7 +242,7 @@ class Blockchain:
 
     def execute(self,tx):
         tx = f"echo {password} | {self.command} {tx}  {self.node} --chain-id {self.chain} {self.gas}  --output json --from wallet"
-
+        print(tx)
         process  = os.popen(f"{tx} -y")
         
         stdout   = process.read()
@@ -329,7 +329,7 @@ class Blockchain:
         # on balance la transaction 
         
         tx = f" tx ibc-transfer transfer transfer {channel} {to_address} {amount}{asset.denom()} "
-        
+        print(tx)
         # ici a la sorti de execute on est certain que la transaction est validé 
         # dans la blockchain self
 
