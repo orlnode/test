@@ -169,7 +169,6 @@ class Blockchain:
 
     def request(self,request):
         request = f"{self.command} {request} {self.node} --chain-id {self.chain} -o json"       
-        
         process = os.popen(request)
         
         stdout = process.read()
@@ -182,7 +181,6 @@ class Blockchain:
             try:
                 return json.loads(stdout)
             except:
-                print(stdout)
                 return 'error'
 
 
@@ -244,7 +242,7 @@ class Blockchain:
 
     def execute(self,tx):
         tx = f"echo {password} | {self.command} {tx}  {self.node} --chain-id {self.chain} {self.gas}  --output json --from wallet"
-        # correction tx  vs message
+
         process  = os.popen(f"{tx} -y")
         
         stdout   = process.read()
@@ -266,7 +264,7 @@ class Blockchain:
             # ici vaut mieux réfléchir à un compteur a la place de while qui fait tourner
             # a l'infini au cas où y'a un problème
             # et que la transaction ne soit pas enregistrer dans le block
-            time.sleep(6)
+            time.sleep(6) #temps de validation du block
             result  = self.request(f' q tx {txhash}')
             if not(result == 'error'):
                 return result
@@ -279,3 +277,72 @@ class Blockchain:
         for coin in result:
             balances[coin['denom']] = coin['amount']
         return balances
+
+
+
+
+
+        """
+        Il y a un timeout par default qui est de 10min. Si y'a un problème les fonds retournent 
+        à la casse départ 10 minutes plus tard, faudrait voir comment réduire le timeout 
+        (d'expérience) 1min c'est suffisant 
+        """
+
+    def ibc_transfer(self,asset,amount,to_chain):
+
+
+
+        # asset     :  Asset
+        # amount    :  int 
+        # to_chain  :  Blockchain 
+
+
+        # 1. il faut que to_chain et self soit controlable 
+        # is_controlable = le logiciel de la chain est installé + wallet est enregistré 
+
+        assert self.is_controlable
+        assert to_chain.is_controlable
+
+        # ensuite on veut pas transférer n'importe quoi 
+        # on veut transferer soit un asset natif de self, ou soit un asset native de to_chain
+        
+        assert (asset.is_native or asset(to_chain).is_native)
+
+        # recupération du channel ibc
+        # Blockchain.channels est un dictionnaire a double entrée 
+        # Blockchain[A.name][B.name] donne le channel ibc pour transférer de la 
+        # blockchain A vers la blockchain B 
+        try:
+
+            channel = Blockchain.channels[self.name][to_chain.name]
+
+        except:
+
+            print("transfer impossible pas de connection ibc")
+            return False
+
+        # ici je regarde les balances
+        
+        to_balance = asset(to_chain).balance()
+        to_address = to_chain.address
+
+        # on balance la transaction 
+        
+        tx = f" tx ibc-transfer transfer transfer {channel} {to_address} {amount}{asset.denom()} "
+        
+        # ici a la sorti de execute on est certain que la transaction est validé 
+        # dans la blockchain self
+
+        self.execute(tx)
+
+        # maintenant faut attendre la validation chez to_chain donc je regarde la balance
+
+        received = False 
+        while not received:
+            time.sleep(6)
+            new_balance = asset(to_chain).balance() # c'est la balance de l'asset qui doit arriver chez to_chain
+            if to_balance == new_balance:
+                continue
+            else:
+                received = True
+        return True

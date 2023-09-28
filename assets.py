@@ -66,7 +66,12 @@ class Asset:
 
 
     def __init__(self,name,host_chain,native_chain,symbol,decimals):
-        
+        """
+            name : uatom par exemple
+            host_chain : type Blockchain, c'est la blockchain où l'asset est 
+            native_chain :  blockchain native de l'asset
+            decimals : nombre de décimals de l'asset pour atom 6.
+        """
         self.name           = name
         self.host_chain     = host_chain
         self.native_chain   = native_chain
@@ -74,6 +79,7 @@ class Asset:
         self.decimals       = decimals
         self.nickname       = self.native_chain.prefix + self.symbol.lower()
 
+        
         if self.is_native():
             self.id = self.name 
         
@@ -83,7 +89,12 @@ class Asset:
             ibc = self.host_chain.name 
             self.id  = ibc+"/"+denom
         
+        # dictionnaire id ---> asset 
+
         self.__class__.instances_by_id[self.id] = self
+
+        ###  je laisse instances_by_denom pour l'instant mais c'est pas bon comme identifiant 
+
         self.__class__.instances_by_denom[self.denom()] = self
 
 
@@ -116,8 +127,8 @@ class Asset:
             'path' : "transfer/"+channel, 'base_denom' : self.name 
         }
         ibc = ibc_denom(path)
-        ibc = ibc.replace('ibc/',f'{to_chain.name}/')
-        return self.instances_by_id[ibc]
+        id = ibc.replace('ibc/',f'{to_chain.name}/')
+        return self.instances_by_id[id]
 
 
     def __call__(self,to_chain):
