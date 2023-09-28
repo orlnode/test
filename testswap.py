@@ -196,8 +196,8 @@ def swap_test():
     else:
         b_2 = 0
     delta_2 = int(new_balance[B.denom()]) - b_2
-    print(f"{delta_1}")
-    print(f"{delta_2}")
+    print(f"difference de {A} dans le portefeuille : {delta_1}")
+    print(f"difference de {B} dans le portefeuille : {delta_2}")
     
     # pour finir je recupére la  pool après mon swap 
     new_pool = OSMOSIS.request("q poolmanager pool 643")
