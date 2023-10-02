@@ -70,3 +70,8 @@ class Database:
             'SELECT * FROM asset')
         datas = self.cursor.fetchall()
         return datas
+
+
+"""
+Quelques fonction pour les pools 
+"""

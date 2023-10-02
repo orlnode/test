@@ -49,16 +49,14 @@ faut d'abord acheter un peu d'osmo (on peut payer les transaction en atom sur os
 mais la fonction blockchain.execute() ne prend pas ça en charge (donc toujours avoir un peu de 
 tokens des blockchains utilisée)
 
-donc on va faire  en terminal sans python
-
-Donc 2 transactions 
+On va faire  en terminal sans python 2 transactions : 
 
   i.    envoyer un peu d'atom sur osmosis  200000 uatom ça fait 0.2 atom ,bon tu peux changer. 
   ii.   acheter un peu d'osmo.
 
 gaiad  tx ibc-transfer transfer transfer channel-141 osmo1zy58n4j3qlq0fs86v9t5fg90qgh08p7zuxvytp 200000uatom    --node https://rpc-cosmoshub.whispernode.com:443 --chain-id cosmoshub-4  --gas auto --gas-adjustment 1.7  --gas-prices 0.025uatom  --output json --from wallet
 
-ii. là se te fait acheter pour 0.03 atom de osmo en payant les frais en atom 
+Ensuite là se te fait acheter pour 0.03 atom de osmo en payant les frais en atom 
 
 osmosisd tx poolmanager swap-exact-amount-in 30000ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2 1  --swap-route-pool-ids 1  --swap-route-denoms uosmo  --node https://osmosis-rpc.polkachu.com:443 --chain-id osmosis-1  --fees 670ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2  
 --output json --from wallet
@@ -70,6 +68,7 @@ atom(OSMOSIS).denom()
 
 """
 def swap_test():
+
     # je récupére la balance osmosis avant
 
     balance = OSMOSIS.balances()
@@ -186,7 +185,7 @@ def swap_test():
     # ICI c'est une vrai transaction !!! 
 
     OSMOSIS.execute(f"tx poolmanager swap-exact-amount-in 100{A.denom()} {amount} {flag}")
-    
+    return false 
     new_balance = OSMOSIS.balances()
     # la j'affiche les différences de balance 
     delta_1 = int(new_balance[A.denom()]) - int(balance[A.denom()]) 
@@ -244,3 +243,33 @@ peer to peer via le protocol mais celui-ci est complétement neutre. Osmosis (le
 récupére simplement les frais de transaction de la blockchain (une poussière : 0.003$)
 
 """
+
+# pour un pool : le message 
+
+#route = [{},{},{}] où chaque {} est de la forme elementary_route = {'pool-id' : pool_id}
+
+"""
+a ----> b       a = a_0 ---> a_1 --- >a_2 ----> ... ak = b
+uniquement determiner par a et b et les id ?  pas forcéement si y a des trois pool 
+
+donc séquence d'id 
+
+class route:
+    routes = []
+    @classmethod
+    def add(cls,elem_route):
+        cls.routes.append(elementary_route.message())
+
+    def __init__(self):
+        pass
+
+
+class elementary_route:
+    
+    def __init__(self,pool_id,denom_out):
+        self.pool_id = pool_id
+        self.token_out_denom =  denom_out
+
+    def message(self):
+        return vars(self)
+        """

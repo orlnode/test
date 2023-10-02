@@ -84,6 +84,20 @@ class Asset:
             self.id = self.name 
         
         else:
+            # ici denom = ibc/+ HASH pour créer un identifiant 
+            # je remplace ibc/ par le nom de la chain où est l'asset
+            # deux assets asset_1 et asset_2 peuvent avoir le même HASH uniquement dans le cas
+            #  1. asset_1(asset_1.native_chain) == asset_2(asset_2.native_chain)
+            #  2. Blockchain[asset_1.host_chain][asset_1.native_chain] ==  Blockchain[asset_2.host_chain][asset_2.native_chain] 
+            #  par exemple, atom(JUNO) et atom(CRESCENT)
+            #  l'asset de base est atom et les channels sont égaux ce qui donne le même ibc_denom
+            #  par contre en ajoutant le nom de la chain (juno ou crescent) ca permet 
+            #  de les distinguer et de fabriquer un vraie identifiant 
+            #  Je trouve étrange la manière dont est fabriqué le HASH car en prenant 
+            #  comme channel = Blockchain[native][host] plutôt que Blockchain[host][native] l'ibc_denom donne
+            #  directement un identifiant unique pour tout les assets ! 
+            
+
             denom = self.denom()
             ibc,denom = denom.split("/")
             ibc = self.host_chain.name 

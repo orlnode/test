@@ -89,6 +89,7 @@ class Blockchain:
                 setattr(self,attr,database.get(attr,name))
 
             # creation des channels ibc
+            # ici faudrait faire une vérification de temps en temps. 
 
             self.__class__.channels[name] = database.get_channels(name)
 
@@ -211,7 +212,6 @@ class Blockchain:
                 return True, wallet[0]['address']
 
 
-
     async def async_request(self,request):
         return False
 
@@ -237,7 +237,16 @@ class Blockchain:
         Attention : il faut vérifie que la transaction est bien enregistrée dans
                      le block. 
     """
+    def denom_traces(self):
+        request = f"q ibc-transfer denom-traces --limit 10000"
+        data  =self.request(request)['denom_traces']
+        filtered_data = []
 
+        for item in data:
+            path = item['path']
+            if path.count('transfer/channel-') == 1:
+                filtered_data.append(item)
+        return filtered_data
 
 
     def execute(self,tx):
@@ -306,6 +315,12 @@ class Blockchain:
         # on veut transferer soit un asset natif de self, ou soit un asset native de to_chain
         
         assert (asset.is_native or asset(to_chain).is_native)
+        
+
+        # et on veut que l'asset que l'on veut transferer est bien sur la chaîne self !!!  
+        
+        assert asset.host_chain.name == self.name
+
 
         # recupération du channel ibc
         # Blockchain.channels est un dictionnaire a double entrée 
@@ -320,23 +335,42 @@ class Blockchain:
             print("transfer impossible pas de connection ibc")
             return False
 
-        # ici je regarde les balances
+        # la balance de la chaine d'arrivé avant le transfert 
         
         to_balance = asset(to_chain).balance()
+
+        # l'address de la chaine d'arrivé 
+
         to_address = to_chain.address
 
-        # on balance la transaction 
+        # la transaction 
         
         tx = f" tx ibc-transfer transfer transfer {channel} {to_address} {amount}{asset.denom()} "
-        # ici a la sorti de execute on est certain que la transaction est validé 
+        
+        # ici à la sorti de execute on est certain que la transaction est validé 
         # dans la blockchain self
 
         self.execute(tx)
 
-        # maintenant faut attendre la validation chez to_chain donc je regarde la balance
+        # maintenant faut attendre la validation chez la blockchain to_chain
+        """
+            Pour expliquer ibc-transfer, en fait y'a jamais de token qui sont transférés.
+            Le principe c'est que la blockchaine de départ va vérouiller dans un contract 
+            la quantité qu'on veut transférer, puis elle va envoyer un preuve de se vérouillage 
+            à la blockchaine d'arrivée. Lorsque la blockchain d'arrivée recoit la preuve, les 
+            validateurs doivent valider la preuve donc enregistré dans ça dans un block et renvoyé 
+            une réponse à la blockchain de départ. Si tout est ok, la blockchain d'arrivée fabrique 
+            exnihilo un token qui représente l'asset transférer. 
+
+            donc a ce moment du code : on est certain que la preuve à été envoyé à la blockchain
+            d'arrivée et faut attendre la validation 
+
+        """ 
+        # ici  de temps en temps la transaction foire 
 
         received = False 
         while not received:
+            # 6 secondes c'est le temps d'un block.
             time.sleep(6)
             new_balance = asset(to_chain).balance() # c'est la balance de l'asset qui doit arriver chez to_chain
             if to_balance == new_balance:
