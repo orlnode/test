@@ -126,3 +126,11 @@ class Database:
             matching_pools.append(row)
 
         return matching_pools
+
+    def insert_comdex_pools(self,datas):
+        self.cursor.executemany(
+            'INSERT OR IGNORE INTO comdex_pool VALUES (?,?,?,?)',datas)
+
+    def insert_crescent_pools(self,datas):
+        self.cursor.executemany(
+            'INSERT OR IGNORE INTO crescent_pool VALUES (?,?,?,?)',datas)

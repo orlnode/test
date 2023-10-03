@@ -98,7 +98,18 @@ white_list = [atom,osmo,axlusdc,axlusdt,axlwbtc,axlweth]
 
 		return self.parse_polynomial(self.routing_matrix[_asset_in,_asset_out])
 
+# avec peu d'asset c'est rapidos 
 
-white_list = [atom,osmo,axlusdc,axlweth]
 
-test = Pool_router(OSMOSIS,white_list,2)
+# test routing ur osmosis 
+white_list = [atom,osmo,axlusdc,axlweth,axlwbtc,akt,regen,evmos]
+test_routing = Pool_router(OSMOSIS,white_list,3)
+
+
+# test routing sur comdex  (faut surveiller les channels ibc)
+white_list = [statom,stosmo,atom,cmdx,cmst,evmos,juno]
+comdex_routing = Pool_router(COMDEX,white_list,4)
+
+# testing sur crescent 
+white_list = [cre,atom, bcre,evmos,axlusdc,cmst,ist]
+crescent_routing = Pool_router(CRESCENT,white_list,3)

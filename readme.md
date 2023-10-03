@@ -11,42 +11,49 @@ Blockchain.init()
 Asset.init()
 ```
 
-Donc là y'a plein de nouvelles variables, par exemple une variable atom, osmo ou encore ion (donc les assets en minuscule et les blockchain en majuscule). Ces variables sont des objets de la classe Asset qui contiennent les informations des assets en question + quelques fonctions ! 
-
-Par exemple :
-
-```
-atom.balance()
-```
-
-doit te renvoyer le nombre d'uatom que tu as sur la blockchain COSMOSHUB. 
-Y'a une fonction transfer qui permet d'obtenir l'asset chez une autre blockchain par exemple. Ce n'est pas une transaction ! 
+Test du router 
+--------------
 
 ```
-atom(OSMOSIS) # pareil que atom.transfer(OSMOSIS)
-```
+sage: router = test_routing.routing(atom,atom)
+sage: router
+[[['atom', 'osmo', '1'], ['osmo', 'atom', '1135']],
+ [['atom', 'osmo', '1135'], ['osmo', 'atom', '1']],
+ [['atom', 'akt', '4'], ['akt', 'osmo', '3'], ['osmo', 'atom', '1']],
+ [['atom', 'akt', '4'], ['akt', 'osmo', '3'], ['osmo', 'atom', '1135']],
+ [['atom', 'akt', '4'], ['akt', 'osmo', '1093'], ['osmo', 'atom', '1']],
+ [['atom', 'akt', '4'], ['akt', 'osmo', '1093'], ['osmo', 'atom', '1135']],
+ [['atom', 'regen', '22'], ['regen', 'osmo', '42'], ['osmo', 'atom', '1']],
+ [['atom', 'regen', '22'], ['regen', 'osmo', '42'], ['osmo', 'atom', '1135']],
+ [['atom', 'osmo', '1'], ['osmo', 'akt', '3'], ['akt', 'atom', '4']],
+ [['atom', 'osmo', '1'], ['osmo', 'akt', '1093'], ['akt', 'atom', '4']],
+ [['atom', 'osmo', '1135'], ['osmo', 'akt', '3'], ['akt', 'atom', '4']],
+ [['atom', 'osmo', '1135'], ['osmo', 'akt', '1093'], ['akt', 'atom', '4']],
+ [['atom', 'osmo', '1'], ['osmo', 'regen', '42'], ['regen', 'atom', '22']],
+ [['atom', 'osmo', '1135'], ['osmo', 'regen', '42'], ['regen', 'atom', '22']]]
+ ``` 
 
-c'est atom sur la blockchain osmosis et tu peux demander ta balance
+ Dans pool_router qui est un classe y'a trois objets Pool_router 
+ ```
+ white_list = [atom,osmo,axlusdc,axlweth,axlwbtc,akt,regen,evmos]
+test_routing = Pool_router(OSMOSIS,white_list,3)
 
-```
-atom(OSMOSIS).balance()
-```
 
-Du coup, ça doit te renvoyer le nombre d'atom que tu as sur osmosis.
+# test routing sur comdex  (faut surveiller les channels ibc)
+white_list = [statom,stosmo,atom,cmdx,cmst,evmos,juno]
+comdex_routing = Pool_router(COMDEX,white_list,4)
 
-----------------------------------------------------------
-Quelques petites modification + j'ai ajouté un fichier testswap.py où y'a une fonction qui teste les matrices de swap sur un exemple. 
+# testing sur crescent 
+white_list = [cre,atom, bcre,evmos,axlusdc,cmst,ist]
+crescent_routing = Pool_router(CRESCENT,white_list,3)
+ ```
 
-```
-attach('testswap.py') 
-```
-Peut être que from testswap import * fonctionne ? je pige pas trop le systéme de module en python
+ Donc là c'est pour tester la classe en multi-chain (trois blockchain différentes)
 
-la fonction swap_test va faire une transaction via ton compte : ca échange 100uatom de ton compte osmosis contre du umee
+ ```
+ len(crescent_routing.routing(atom,atom))
+ 42
 
-```
-swap_test()
-```
+ ```
 
-qui doit faire une tx et afficher quelques datas. Mais faut regarder un peu le code : j'ai mis un truc "----> truc préliminaire " ligne 45 de testswap.py car tu n'a pas d'osmo pour payer les frais de transaction sur osmosis donc faut faire 2 commandes en terminal qui sont indiquées, ca envoie un peu d'atom vers osmosis et ensuite ca achete un peu osmo avec de l'atom en payant les frais en atom.  (faut attendre quelques seconde entre les deux transactions, le temps que le transfer ibc se fasse normalement 20 secondes maxi). 
-
+ 
