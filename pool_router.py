@@ -107,9 +107,10 @@ test_routing = Pool_router(OSMOSIS,white_list,3)
 
 
 # test routing sur comdex  (faut surveiller les channels ibc)
-white_list = [statom,stosmo,atom,cmdx,cmst,evmos,juno]
-comdex_routing = Pool_router(COMDEX,white_list,4)
+white_list = [statom,stosmo,atom,cmdx,cmst,evmos,juno,axlwmatic,axlwftm]
+#comdex_routing = Pool_router(COMDEX,white_list,4)
 
 # testing sur crescent 
-white_list = [cre,atom, bcre,evmos,axlusdc,cmst,ist]
-crescent_routing = Pool_router(CRESCENT,white_list,3)
+# ici il faut travailler les pools out_of _range 
+white_list = [gusdc,gusdt,axlusdc,cmst,ist]
+#crescent_routing = Pool_router(CRESCENT,white_list,2)
