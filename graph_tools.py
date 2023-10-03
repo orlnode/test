@@ -69,20 +69,26 @@ class graph_tools:
 
         # je remplie la matrice 
         M = matrix(self.polynomial,len(self.sommets),len(self.sommets))
+
         for nom_1__id__nom_2 in self.variables_name:
-            if nom_1__id__nom_2 == "one":
-                continue
-            nom_1,id,nom_2 = nom_1__id__nom_2.split('__')
-            try:
-                # faudrait analyser les erreurs potentielles ?  
+            nom_1, id, nom_2 = self.variable_to_arrete(nom_1__id__nom_2)
+            if id:
                 i = self.index[nom_1]
                 j = self.index[nom_2]
+				M[i,j] = M[i,j] + self.X[nom_1__id__nom_2]
 
-                M[i,j] = M[i,j] + self.X[nom_1__id__nom_2]
-            except:
-                continue
         self.matrix = M + self.X['one']
 
+
+    def parse_monomial(self,monomial): 
+
+        # monomial 		= A__1__B*B__3__A 
+        # route 		= ['A__1__B', 'B__3__A'] 
+        # return 		[ [A,B,1], [B,A,3]]
+        
+        route = str(monomial).split("*")
+
+        return [self.variable_to_arrete(v) for v in route]
 
     def parse_polynomial(self,P):
         
@@ -106,27 +112,39 @@ class graph_tools:
             
             if route not in routes and route != []:
                 routes.append(route)
+
         return routes
 
 
-    def parse_monomial(self,monomial):
 
-        #monomial = monomial.subs({self.X['one'] : 1})
-        # exemple 
-        # monomial = A__1__B*B__3__A 
-        
-        expression = str(monomial)
-        route_to_parse = expression.split("*")
 
-        # routes_to_parse = ['A__1__B', 'B__3__A']
-        
-        route = []
-        
-        for arrete in route_to_parse:
-            if "one" not in arrete: 
-                nom_1 , id , nom_2 = arrete.split("__")
-                route.append([nom_1,nom_2,id])
-        return route
+    def arrete_to_variable(self,arrete):
+
+    	if arrete not in self.arretes:
+    		
+    		return self.X["one"]
+    	
+    	else:
+    		
+    		nom_1 , nom_2 , id = arrete
+    		
+    		return self.X[f"{nom_1}__{id}__{nom_2}"]
+
+
+   	def variable_to_arrete(self,v):
+
+   		v = str(v)
+
+   		if "one" not in v:
+   			
+   			nom_1, id,nom_2 = v.split('__')
+   			
+   			return [nom_1,nom_2,id]
+   		else:
+   			return None, None, None
+
+
+
 
 """
     principe la puissance n de self.matrix donne les chemins de longeur n 
