@@ -97,3 +97,8 @@ white_list = [atom,osmo,axlusdc,axlusdt,axlwbtc,axlweth]
 		# y'a un petit travail ici 
 
 		return self.parse_polynomial(self.routing_matrix[_asset_in,_asset_out])
+
+
+white_list = [atom,osmo,axlusdc,axlweth]
+
+test = Pool_router(OSMOSIS,white_list,2)

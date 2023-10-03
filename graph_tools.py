@@ -71,24 +71,26 @@ class graph_tools:
         M = matrix(self.polynomial,len(self.sommets),len(self.sommets))
 
         for nom_1__id__nom_2 in self.variables_name:
-            nom_1, id, nom_2 = self.variable_to_arrete(nom_1__id__nom_2)
-            if id:
+            try:
+                nom_1, nom_2, id = self.variable_to_arrete(nom_1__id__nom_2)
                 i = self.index[nom_1]
                 j = self.index[nom_2]
-				M[i,j] = M[i,j] + self.X[nom_1__id__nom_2]
-
+                M[i,j] = M[i,j] + self.X[nom_1__id__nom_2]
+            except:
+                print(nom_1__id__nom_2)
+                continue
         self.matrix = M + self.X['one']
 
 
     def parse_monomial(self,monomial): 
 
-        # monomial 		= A__1__B*B__3__A 
-        # route 		= ['A__1__B', 'B__3__A'] 
-        # return 		[ [A,B,1], [B,A,3]]
+        # monomial      = A__1__B*B__3__A 
+        # route         = ['A__1__B', 'B__3__A'] 
+        # return        [ [A,B,1], [B,A,3]]
         
         route = str(monomial).split("*")
 
-        return [self.variable_to_arrete(v) for v in route]
+        return [self.variable_to_arrete(v) for v in route if "one" not in v]
 
     def parse_polynomial(self,P):
         
@@ -120,28 +122,26 @@ class graph_tools:
 
     def arrete_to_variable(self,arrete):
 
-    	if arrete not in self.arretes:
-    		
-    		return self.X["one"]
-    	
-    	else:
-    		
-    		nom_1 , nom_2 , id = arrete
-    		
-    		return self.X[f"{nom_1}__{id}__{nom_2}"]
+        if arrete not in self.arretes:
+            
+            return self.X["one"]
+        
+        else:
+            
+            nom_1 , nom_2 , id = arrete
+            
+            return self.X[f"{nom_1}__{id}__{nom_2}"]
 
 
-   	def variable_to_arrete(self,v):
+    def variable_to_arrete(self,v):
 
-   		v = str(v)
+        v = str(v)
 
-   		if "one" not in v:
-   			
-   			nom_1, id,nom_2 = v.split('__')
-   			
-   			return [nom_1,nom_2,id]
-   		else:
-   			return None, None, None
+        if "one" not in v:
+            
+            nom_1, id,nom_2 = v.split('__')
+            
+            return [nom_1,nom_2,id]
 
 
 

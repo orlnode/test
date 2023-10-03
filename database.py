@@ -115,7 +115,7 @@ class Database:
         self.cursor.execute(sql, pools_id)
 
     def get_pools_from(self,blockchain,white_list):
-
+        white_list = [asset(blockchain).denom() for asset in white_list]
         table_name =f"{blockchain.name}_pool"
         sql = f"SELECT id, type, asset_1, asset_2 FROM {table_name} WHERE asset_1 IN ({','.join(['?'] * len(white_list))}) AND asset_2 IN ({','.join(['?'] * len(white_list))})"
 
