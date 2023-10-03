@@ -5,13 +5,7 @@ class graph_tools:
         """
             ici data = {'sommets' :      sommets,
                         'arretes' :      arretes 
-                        }
-        sommet = [nom] un tableau de string
-        arrete = [nom_1,nom_2, id] 
-        j'utilise le caractere "__" pour separer des infos donc
-            faut pas que des les noms y'a ce caractère  
-
-        """
+    
 
         self.sommets = data['sommets']
         self.arretes = data['arretes']
