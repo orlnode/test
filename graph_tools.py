@@ -2,7 +2,7 @@ class graph_tools:
 
 
     def __init__(self,data):
-        """
+        """ Bordel_from_master 
             ici data = {'sommets' :      sommets,
                         'arretes' :      arretes 
                         }
